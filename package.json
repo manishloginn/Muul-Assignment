@@ -9,8 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@cubejs-client/core": "^1.2.30",
+    "@cubejs-client/react": "^1.2.30",
     "@types/chart.js": "^2.9.41",
     "chart.js": "^4.4.8",
+    "jsonwebtoken": "^9.0.2",
     "next": "15.2.4",
     "pg": "^8.14.1",
     "react": "^19.0.0",
