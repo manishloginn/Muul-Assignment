@@ -4,7 +4,7 @@ import cubejs, { CubeApi } from '@cubejs-client/core';
 const fetchToken = async (): Promise<string> => {
   const baseUrl =
     typeof window === 'undefined'
-      ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+      ? process.env.NEXT_PUBLIC_CUBEJS_API_URL || 'http://localhost:3000'
       : '';
 
   const res = await fetch(`${baseUrl}/api/cubejs-token`);
