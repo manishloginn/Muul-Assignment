@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   BarChart,
   Bar,
@@ -9,17 +9,25 @@ import {
   Legend,
 } from 'recharts';
 import { useCubeQuery } from '@cubejs-client/react';
-import cubejsApi from '../lib/cube-client';
+import cubejsApiPromise from '../lib/cube-client';
+import type { CubeApi } from '@cubejs-client/core';
 
 const ValueBarChart: React.FC = () => {
+  const [cubejsApi, setCubejsApi] = useState<CubeApi | null>(null);
+
+  useEffect(() => {
+    cubejsApiPromise.then(api => setCubejsApi(api));
+  }, []);
+
   const { resultSet, error, isLoading } = useCubeQuery(
     {
       measures: ['Metrics.totalValue'],
       dimensions: ['Metrics.name'],
     },
-    { cubeApi: cubejsApi }
+    cubejsApi ? { cubeApi: cubejsApi } : undefined
   );
 
+  if (!cubejsApi) return <p>Initializing...</p>;
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.toString()}</p>;
 
