@@ -2,23 +2,36 @@
 
 import { useEffect, useState } from 'react';
 import { CubeProvider } from '@cubejs-client/react';
-import cubejsApiPromise from '../lib/cube-client';
-import type { CubeApi } from '@cubejs-client/core'; // <-- Yeh add kar
+import type { CubeApi } from '@cubejs-client/core';
+import cubejs from '@cubejs-client/core';
 
 export default function CubeProviderWrapper({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [cubeApi, setCubeApi] = useState<CubeApi | null>(null); // <-- Type set here
+  const [cubeApi, setCubeApi] = useState<CubeApi | null>(null);
 
   useEffect(() => {
-    const fetchCubeApi = async () => {
-      const api = await cubejsApiPromise;
-      setCubeApi(api); // ✅ Now this works
+    const fetchTokenAndInit = async () => {
+      try {
+        const res = await fetch('/api/cubejs-token');
+        const data = await res.json();
+
+        const api = cubejs(data.token, {
+          apiUrl:
+            process.env.NODE_ENV === 'development'
+              ? 'http://localhost:4000/cubejs-api/v1'
+              : 'https://cubejs-anylytics.onrender.com/cubejs-api/v1',
+        });
+
+        setCubeApi(api);
+      } catch (err) {
+        console.error('Error setting Cube API:', err);
+      }
     };
 
-    fetchCubeApi();
+    fetchTokenAndInit();
   }, []);
 
   if (!cubeApi) {
